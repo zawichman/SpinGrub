@@ -38,6 +38,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        com.spingrub.app.util.SoundFx.init(applicationContext)
         enableEdgeToEdge()
         setContent {
             SpinGrubTheme {

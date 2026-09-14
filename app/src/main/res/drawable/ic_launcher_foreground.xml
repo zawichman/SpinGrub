@@ -3,16 +3,56 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Fork -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M40,30 L40,52 A6,6 0 0 0 46,58 L46,80 A3,3 0 0 0 52,80 L52,58 A6,6 0 0 0 58,52 L58,30 A2,2 0 0 0 54,30 L54,46 L52,46 L52,30 A2,2 0 0 0 48,30 L48,46 L46,46 L46,30 A2,2 0 0 0 42,30 Z" />
-    <!-- Spinner wheel outline -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M72,34 m-16,0 a16,16 0 1,0 32,0 a16,16 0 1,0 -32,0 Z M72,34 m-11,0 a11,11 0 1,1 22,0 a11,11 0 1,1 -22,0 Z" />
-    <!-- Pointer -->
+
+    <!-- Top finial ball -->
     <path
         android:fillColor="#FFD93D"
-        android:pathData="M72,14 L77,22 L67,22 Z" />
+        android:pathData="M54,26 m-3,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0 Z" />
+    <!-- Spike under finial -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M53,30 h2 v4 h-2 z" />
+
+    <!-- Canopy roof (dome) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,34 C40,34 32,44 31,52 L77,52 C76,44 68,34 54,34 Z" />
+    <!-- Roof scallop stripes -->
+    <path
+        android:fillColor="#FF4757"
+        android:pathData="M54,34 C48,34 43.5,37 40.5,41 L35,52 L44,52 L48,40 C50,37 52,35.5 54,35 Z" />
+    <path
+        android:fillColor="#4D96FF"
+        android:pathData="M54,35 C56,35.5 58,37 60,40 L64,52 L73,52 L67.5,41 C64.5,37 60,34 54,34 Z" />
+
+    <!-- Scalloped valance under the roof -->
+    <path
+        android:fillColor="#FFD93D"
+        android:pathData="M31,52 h46 v4 q-3.83,4 -7.67,0 q-3.83,4 -7.67,0 q-3.83,4 -7.66,0 q-3.83,4 -7.67,0 q-3.83,4 -7.66,0 q-3.83,4 -7.67,0 Z" />
+
+    <!-- Left pole -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M40,57 h3 v20 h-3 z" />
+    <!-- Right pole -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M65,57 h3 v20 h-3 z" />
+    <!-- Center pole -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M52.5,57 h3 v20 h-3 z" />
+
+    <!-- Barber-pole stripes on center pole -->
+    <path
+        android:fillColor="#FF4757"
+        android:pathData="M52.5,59 h3 v3 h-3 z M52.5,65 h3 v3 h-3 z M52.5,71 h3 v3 h-3 z" />
+
+    <!-- Base platform -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M34,77 h40 a2,2 0 0 1 2,2 v3 a2,2 0 0 1 -2,2 h-40 a2,2 0 0 1 -2,-2 v-3 a2,2 0 0 1 2,-2 Z" />
+    <path
+        android:fillColor="#6BCB77"
+        android:pathData="M34,80 h40 v2 h-40 z" />
 </vector>

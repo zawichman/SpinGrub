@@ -28,6 +28,7 @@ import com.spingrub.app.data.Favorite
 import com.spingrub.app.data.SpinGrubData
 import com.spingrub.app.ui.theme.SegmentColors
 import com.spingrub.app.util.Feedback
+import com.spingrub.app.util.SoundFx
 
 @Composable
 fun FavSpinnerScreen(data: SpinGrubData) {
@@ -87,8 +88,12 @@ fun FavSpinnerScreen(data: SpinGrubData) {
                             landedIndex = idx
                             showResult = true
                             if (data.hapticsEnabled) Feedback.tick(context)
+                            SoundFx.ding(data.soundEnabled)
                         },
-                        onTick = { if (data.hapticsEnabled) Feedback.tick(context) },
+                        onTick = {
+                            if (data.hapticsEnabled) Feedback.tick(context)
+                            SoundFx.tick(data.soundEnabled)
+                        },
                     )
                 }
             }

@@ -1,6 +1,6 @@
 # 🍽️ SpinGrub
 
-A fun, colorful Android app that helps you decide what to cook by spinning three wheels — **Meat**, **Base** (the way you eat it), and **Sauce** — and combining the results into a meal. Swipe the wheels with your finger (the harder you fling, the longer the spin) or tap **Spin All**. Save your favorite combos and spin a dedicated wheel of favorites when you can't decide!
+A fun, colorful Android app that helps you decide what to cook by spinning three wheels — **Meat**, **Vessel** (the way you eat it), and **Sauce** — and combining the results into a meal. Swipe the wheels with your finger (the harder you fling, the longer the spin) or tap **Spin All**. Save your favorite combos and spin a dedicated wheel of favorites when you can't decide!
 
 Built with **Kotlin + Jetpack Compose + Material 3**.
 
@@ -13,13 +13,13 @@ On your Android device, open the downloaded `SpinGrub.apk` and allow **"install 
 ## ✨ Features
 
 ### 🎡 Spinner tab
-- Three colorful wheels titled **Meat**, **Base** (how you eat it — bowl / salad / sandwich / wrap …), and **Sauce**.
+- Three colorful wheels titled **Meat**, **Vessel** (how you eat it — bowl / salad / sandwich / wrap …), and **Sauce**.
 - **Responsive layout:** wheels stack vertically in portrait, sit side-by-side in landscape.
 - **Swipe-to-spin physics:** flick any wheel with your finger — swipe velocity drives spin speed & duration, with natural deceleration.
 - **Spin All** button spins all three wheels at once, each with a similar-but-random power.
 - **Animated result title box** springs in over the wheels showing what you landed on, and disappears the moment a new spin starts.
 - **Favorite this combo:** name and save the current landed combination.
-- Optional **confetti** celebration (Lottie), haptic ticks, and sound toggle.
+- Optional **confetti** celebration (Lottie), **haptic ticks**, and **sound effects** (a click on each segment tick and a chime on landing) — each independently toggleable in Setup.
 
 ### ⭐ Fav Spinner tab
 - A single centered wheel that cycles through your saved favorite combos.

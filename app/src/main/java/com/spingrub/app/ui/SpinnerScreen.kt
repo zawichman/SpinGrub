@@ -45,6 +45,7 @@ import com.spingrub.app.data.Category
 import com.spingrub.app.data.SpinGrubData
 import com.spingrub.app.ui.theme.SegmentColors
 import com.spingrub.app.util.Feedback
+import com.spingrub.app.util.SoundFx
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -79,6 +80,7 @@ fun SpinnerScreen(
         val value = items.getOrNull(index)
         results = results.toMutableMap().apply { put(c, value) }
         if (data.hapticsEnabled) Feedback.tick(context)
+        SoundFx.ding(data.soundEnabled)
         // Once nothing is spinning anymore, reveal the result box + confetti.
         if (Category.ordered.none { wheelStates.getValue(it).spinning }) {
             showResult = true
@@ -93,6 +95,12 @@ fun SpinnerScreen(
     fun onManualSpinStart() {
         showResult = false
         playConfetti = false
+    }
+
+    // Per-segment tick: haptic + click sound, each gated by its own setting.
+    fun onTick() {
+        if (data.hapticsEnabled) Feedback.tick(context)
+        SoundFx.tick(data.soundEnabled)
     }
 
     fun spinAll() {
@@ -110,7 +118,7 @@ fun SpinnerScreen(
                     velocityDegPerSec = velocity,
                     segmentCount = items.size,
                     onSettled = { idx -> onOneSettled(c, idx) },
-                    onTick = { if (data.hapticsEnabled) Feedback.tick(context) }
+                    onTick = { onTick() }
                 )
             }
         }
@@ -151,7 +159,7 @@ fun SpinnerScreen(
                                 enabled = !anySpinning,
                                 onSpinStart = { onManualSpinStart() },
                                 onSettled = { idx -> onOneSettled(c, idx) },
-                                onTick = { if (data.hapticsEnabled) Feedback.tick(context) })
+                                onTick = { onTick() })
                         }
                     }
                 }
@@ -161,7 +169,7 @@ fun SpinnerScreen(
                         enabled = !anySpinning,
                         onSpinStart = { onManualSpinStart() },
                         onSettled = { idx -> onOneSettled(c, idx) },
-                        onTick = { if (data.hapticsEnabled) Feedback.tick(context) })
+                        onTick = { onTick() })
                     Spacer(Modifier.height(16.dp))
                 }
             }
