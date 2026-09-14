@@ -1,0 +1,18 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Fork -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M40,30 L40,52 A6,6 0 0 0 46,58 L46,80 A3,3 0 0 0 52,80 L52,58 A6,6 0 0 0 58,52 L58,30 A2,2 0 0 0 54,30 L54,46 L52,46 L52,30 A2,2 0 0 0 48,30 L48,46 L46,46 L46,30 A2,2 0 0 0 42,30 Z" />
+    <!-- Spinner wheel outline -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M72,34 m-16,0 a16,16 0 1,0 32,0 a16,16 0 1,0 -32,0 Z M72,34 m-11,0 a11,11 0 1,1 22,0 a11,11 0 1,1 -22,0 Z" />
+    <!-- Pointer -->
+    <path
+        android:fillColor="#FFD93D"
+        android:pathData="M72,14 L77,22 L67,22 Z" />
+</vector>
