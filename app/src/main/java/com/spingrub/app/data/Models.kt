@@ -3,7 +3,7 @@ package com.spingrub.app.data
 /** The three spinner categories. Order matters for UI layout. */
 enum class Category(val title: String, val emoji: String) {
     MEAT("Meat", "\uD83E\uDD69"),   // 🥩
-    METHOD("Base", "\uD83E\uDD57"), // 🥗  (how you eat it: bowl / bread / salad …)
+    METHOD("Vessel", "\uD83D\uDEA2"), // 🚢  (how you eat it: bowl / bread / salad …)
     SAUCE("Sauce", "\uD83E\uDED9"); // 🫙
 
     companion object {
