@@ -4,6 +4,12 @@ A fun, colorful Android app that helps you decide what to cook by spinning three
 
 Built with **Kotlin + Jetpack Compose + Material 3**.
 
+## 📲 Download & install
+
+Grab the prebuilt APK here: **[`dist/SpinGrub.apk`](dist/SpinGrub.apk)** (open the file on GitHub and tap **Download**).
+
+On your Android device, open the downloaded `SpinGrub.apk` and allow **"install from unknown sources"** if prompted. This is a debug-signed APK intended for sideloading/testing.
+
 ## ✨ Features
 
 ### 🎡 Spinner tab
