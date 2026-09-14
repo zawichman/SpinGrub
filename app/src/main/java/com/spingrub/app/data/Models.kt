@@ -2,9 +2,9 @@ package com.spingrub.app.data
 
 /** The three spinner categories. Order matters for UI layout. */
 enum class Category(val title: String, val emoji: String) {
-    MEAT("Meat", "\uD83E\uDD69"),      // 🥩
-    METHOD("Method", "\uD83C\uDF73"),  // 🍳
-    SAUCE("Sauce", "\uD83E\uDED9");    // 🫙
+    MEAT("Meat", "\uD83E\uDD69"),   // 🥩
+    METHOD("Base", "\uD83E\uDD57"), // 🥗  (how you eat it: bowl / bread / salad …)
+    SAUCE("Sauce", "\uD83E\uDED9"); // 🫙
 
     companion object {
         val ordered = listOf(MEAT, METHOD, SAUCE)
@@ -41,6 +41,12 @@ data class SpinGrubData(
 
 object DefaultData {
     val MEAT = listOf("Chicken", "Beef", "Pork", "Tofu", "Shrimp", "Salmon", "Lamb", "Turkey")
-    val METHOD = listOf("Grilled", "Fried", "Baked", "Roasted", "Steamed", "Slow-Cooked", "Stir-Fried", "Smoked")
+
+    // "Base" = the way you serve/eat the meat.
+    val METHOD = listOf(
+        "Rice Bowl", "Salad", "Sandwich", "Wrap", "Tacos",
+        "Pasta", "Burger", "Flatbread", "Noodles", "Loaded Fries"
+    )
+
     val SAUCE = listOf("BBQ", "Teriyaki", "Garlic Butter", "Peri-Peri", "Honey Mustard", "Sriracha", "Chimichurri", "Alfredo")
 }

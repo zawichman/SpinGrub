@@ -64,20 +64,23 @@ fun SpinnerScreen(
     // Landed results per category (null until settled at least once).
     var results by remember { mutableStateOf<Map<Category, String?>>(Category.ordered.associateWith { null }) }
     var showResult by remember { mutableStateOf(false) }
-    var spinningCount by remember { mutableStateOf(0) }
     var playConfetti by remember { mutableStateOf(false) }
     var showSaveDialog by remember { mutableStateOf(false) }
     var favName by remember { mutableStateOf("") }
 
     fun itemsFor(c: Category) = data.itemsFor(c)
 
+    // Any wheel currently mid-spin? Derived from each wheel's own state, so we
+    // never need a manual counter that (previously) disabled gestures.
+    val anySpinning = Category.ordered.any { wheelStates.getValue(it).spinning }
+
     fun onOneSettled(c: Category, index: Int) {
         val items = itemsFor(c)
         val value = items.getOrNull(index)
         results = results.toMutableMap().apply { put(c, value) }
-        spinningCount = (spinningCount - 1).coerceAtLeast(0)
         if (data.hapticsEnabled) Feedback.tick(context)
-        if (spinningCount == 0) {
+        // Once nothing is spinning anymore, reveal the result box + confetti.
+        if (Category.ordered.none { wheelStates.getValue(it).spinning }) {
             showResult = true
             if (data.confettiEnabled) {
                 playConfetti = false
@@ -86,11 +89,16 @@ fun SpinnerScreen(
         }
     }
 
-    fun spinAll() {
+    // Called when the user starts a manual flick on any wheel.
+    fun onManualSpinStart() {
         showResult = false
         playConfetti = false
-        spinningCount = Category.ordered.count { itemsFor(it).isNotEmpty() }
-        if (spinningCount == 0) return
+    }
+
+    fun spinAll() {
+        if (anySpinning) return
+        showResult = false
+        playConfetti = false
         Category.ordered.forEach { c ->
             val items = itemsFor(c)
             if (items.isEmpty()) return@forEach
@@ -140,8 +148,8 @@ fun SpinnerScreen(
                     Category.ordered.forEach { c ->
                         Box(modifier = Modifier.weight(1f)) {
                             WheelBlock(c, itemsFor(c), wheelStates.getValue(c),
-                                enabled = spinningCount == 0,
-                                onSpinStart = { showResult = false; playConfetti = false; spinningCount++ },
+                                enabled = !anySpinning,
+                                onSpinStart = { onManualSpinStart() },
                                 onSettled = { idx -> onOneSettled(c, idx) },
                                 onTick = { if (data.hapticsEnabled) Feedback.tick(context) })
                         }
@@ -150,8 +158,8 @@ fun SpinnerScreen(
             } else {
                 Category.ordered.forEach { c ->
                     WheelBlock(c, itemsFor(c), wheelStates.getValue(c),
-                        enabled = spinningCount == 0,
-                        onSpinStart = { showResult = false; playConfetti = false; spinningCount++ },
+                        enabled = !anySpinning,
+                        onSpinStart = { onManualSpinStart() },
                         onSettled = { idx -> onOneSettled(c, idx) },
                         onTick = { if (data.hapticsEnabled) Feedback.tick(context) })
                     Spacer(Modifier.height(16.dp))
@@ -160,8 +168,8 @@ fun SpinnerScreen(
 
             Spacer(Modifier.height(8.dp))
             Button(
-                onClick = { if (spinningCount == 0) spinAll() },
-                enabled = spinningCount == 0,
+                onClick = { spinAll() },
+                enabled = !anySpinning,
                 shape = RoundedCornerShape(50),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
                 modifier = Modifier.fillMaxWidth().height(56.dp),
@@ -176,7 +184,7 @@ fun SpinnerScreen(
                     favName = ""
                     showSaveDialog = true
                 },
-                enabled = allLanded && spinningCount == 0,
+                enabled = allLanded && !anySpinning,
                 shape = RoundedCornerShape(50),
                 modifier = Modifier.fillMaxWidth().height(50.dp),
             ) {
@@ -189,10 +197,10 @@ fun SpinnerScreen(
 
         // Animated result title box overlays the wheels (top-center).
         ResultTitleBox(
-            visible = showResult && spinningCount == 0,
+            visible = showResult && !anySpinning,
             title = results[Category.MEAT]?.let { meat ->
                 "$meat ${results[Category.METHOD].orEmpty()}"
-            }.orEmpty().trim(),
+            }.orEmpty().trim().ifEmpty { "Spin to begin!" },
             subtitle = "You got",
             recipe = if (allLanded) Category.ordered.map { results[it].orEmpty() } else null,
             modifier = Modifier
@@ -246,14 +254,20 @@ private fun WheelBlock(
     onSettled: (Int) -> Unit,
     onTick: () -> Unit,
 ) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 12.dp),
+    ) {
         Text(
             "${category.emoji} ${category.title}",
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.ExtraBold,
         )
-        Spacer(Modifier.height(4.dp))
+        // Extra breathing room so the wheel's top pointer never touches the title.
+        Spacer(Modifier.height(16.dp))
         if (items.isEmpty()) {
             Text(
                 "No items — add some in Setup!",

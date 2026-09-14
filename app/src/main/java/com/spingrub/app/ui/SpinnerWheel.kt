@@ -34,7 +34,9 @@ import kotlin.random.Random
 class WheelState {
     var angle by mutableFloatStateOf(Random.nextFloat() * 360f)
         internal set
-    var isSpinning by mutableFloatStateOf(0f)
+
+    /** True while a momentum spin animation is running. Manual dragging is always allowed. */
+    var spinning by androidx.compose.runtime.mutableStateOf(false)
         internal set
 
     /**
@@ -49,7 +51,7 @@ class WheelState {
         onTick: () -> Unit = {}
     ) {
         if (segmentCount <= 0) return
-        isSpinning = 1f
+        spinning = true
         val v0 = velocityDegPerSec.coerceIn(360f, 4200f)
         // Deceleration (deg/s^2). Larger => stops sooner.
         val decel = 900f
@@ -78,7 +80,7 @@ class WheelState {
                 onTick()
             }
         }
-        isSpinning = 0f
+        spinning = false
         onSettled(indexAtPointer(segmentCount))
     }
 
@@ -110,43 +112,72 @@ fun SpinnerWheel(
 ) {
     val scope = rememberCoroutineScope()
     val segCount = items.size
+    // Keep the latest gating flag without re-keying pointerInput (which would
+    // cancel an in-progress drag). Read .value inside gesture callbacks.
+    val enabledState = androidx.compose.runtime.rememberUpdatedState(enabled)
 
     Box(
         modifier = modifier
             .fillMaxWidth()
             .aspectRatio(1f)
-            .pointerInput(items, enabled) {
-                if (!enabled || segCount == 0) return@pointerInput
+            // Key ONLY on items so the gesture detector is never torn down
+            // mid-drag when `enabled` toggles. That teardown was the freeze bug.
+            .pointerInput(items) {
+                if (segCount == 0) return@pointerInput
                 val center = Offset(size.width / 2f, size.height / 2f)
                 var lastAngleDeg = 0f
-                var accumulatedVel = 0f
+                var lastTimeNs = 0L
+                var velDegPerSec = 0f
+                var dragging = false
                 detectDragGestures(
                     onDragStart = { pos ->
-                        onSpinStart()
-                        lastAngleDeg = angleFromCenter(pos, center)
-                        accumulatedVel = 0f
+                        // Ignore new drags while a momentum spin is animating,
+                        // or when the parent has disabled interaction.
+                        if (wheelState.spinning || !enabledState.value) {
+                            dragging = false
+                        } else {
+                            dragging = true
+                            onSpinStart()
+                            lastAngleDeg = angleFromCenter(pos, center)
+                            lastTimeNs = System.nanoTime()
+                            velDegPerSec = 0f
+                        }
                     },
                     onDrag = { change, _ ->
-                        val a = angleFromCenter(change.position, center)
-                        var delta = a - lastAngleDeg
-                        if (delta > 180f) delta -= 360f
-                        if (delta < -180f) delta += 360f
-                        wheelState.angle = (wheelState.angle + delta + 360f) % 360f
-                        // rough velocity estimate from drag deltas
-                        accumulatedVel = delta * 60f
-                        lastAngleDeg = a
+                        if (dragging) {
+                            val a = angleFromCenter(change.position, center)
+                            var delta = a - lastAngleDeg
+                            if (delta > 180f) delta -= 360f
+                            if (delta < -180f) delta += 360f
+                            wheelState.angle = (wheelState.angle + delta + 360f) % 360f
+
+                            val now = System.nanoTime()
+                            val dt = (now - lastTimeNs) / 1_000_000_000f
+                            if (dt > 0f) {
+                                val instant = delta / dt
+                                // smooth so the fling reflects recent motion, not one jittery frame
+                                velDegPerSec = velDegPerSec * 0.6f + instant * 0.4f
+                            }
+                            lastAngleDeg = a
+                            lastTimeNs = now
+                            change.consume()
+                        }
                     },
                     onDragEnd = {
-                        val flingVel = kotlin.math.abs(accumulatedVel) * 8f
-                        scope.launch {
-                            wheelState.spin(
-                                velocityDegPerSec = flingVel.coerceAtLeast(500f),
-                                segmentCount = segCount,
-                                onSettled = onSettled,
-                                onTick = onTick,
-                            )
+                        val speed = kotlin.math.abs(velDegPerSec)
+                        if (dragging && speed >= 120f) {
+                            scope.launch {
+                                wheelState.spin(
+                                    velocityDegPerSec = speed,
+                                    segmentCount = segCount,
+                                    onSettled = onSettled,
+                                    onTick = onTick,
+                                )
+                            }
                         }
-                    }
+                        dragging = false
+                    },
+                    onDragCancel = { dragging = false }
                 )
             }
     ) {

@@ -81,7 +81,7 @@ fun FavSpinnerScreen(data: SpinGrubData) {
                         items = favorites.map { it.name },
                         wheelState = wheelState,
                         colors = SegmentColors,
-                        enabled = wheelState.isSpinning == 0f,
+                        enabled = !wheelState.spinning,
                         onSpinStart = { showResult = false },
                         onSettled = { idx ->
                             landedIndex = idx
